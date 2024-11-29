@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BannerProjekt.Models
+namespace SpreadsheetProjekt.Models
 {
     public abstract class SpreadsheetBase
     {
@@ -19,9 +19,20 @@ namespace BannerProjekt.Models
 
         const int MAX_ROW_NUMBER = 5000;
         const int MAX_COLUMN_NUMBER = 100;
-        //todo - Készítsen MIN_ROW_NUMBER és MIN_COLUMN_NUMBER néven konstansokat. A legkevesebb sor 10, a elgkevesebb oszlop pedig 20 lehet!
+        //todo - Készítsen MIN_ROW_NUMBER és MIN_COLUMN_NUMBER néven konstansokat. A legkevesebb sor 6, a elgkevesebb oszlop pedig 10 lehet!
 
         private string[,] cells;
+
+        /// <summary>
+        /// Sorok száma
+        /// </summary>
+        public int RowCount => cells.GetLength(0);
+
+        /// <summary>
+        /// Oszlopok száma
+        /// </summary>
+        public int ColumnCount => cells.GetLength(1);
+
 
         /// <summary>
         /// Táblázatot létrehozó konstruktor. A cellák üres stringet tartalmaznak a létrehozáskor.
@@ -37,7 +48,7 @@ namespace BannerProjekt.Models
             ResetTable();
         }
         //todo 1) - [SpreadsheetBase] Készítsen paraméter nélküli konstruktort, amit a meglévő konstruktorra vezet vissza!
-        // Ebben az esetben 26 oszlop és 500 sor legyen a létrejövő táblázatban!
+        // Ebben az esetben a minimum számú oszlop és minimum számú sor legyen a létrejövő táblázatban!
 
         /// <summary>
         /// A táblázat cellájához biztosít írási és olvasási hozzáférést
@@ -69,11 +80,16 @@ namespace BannerProjekt.Models
         /// <summary>
         /// Megvizsgálja, hogy valós-e a sorindex
         /// </summary>
-        /// <param name="rowIndex">Vizsgálandó sor indexe</param>
+        /// <param name="rowIndex">Vizsgálandó sor indexe (0-tól induló számozás)</param>
         /// <returns>true - létezik ilyen sor</returns>
         public abstract bool IsValidIndexForRow(int rowIndex);
 
-        public abstract bool IsValidIndexForColumn(int rowIndex);
+        /// <summary>
+        /// Megvizsgálja, hogy valós-e az oszlopindex
+        /// </summary>
+        /// <param name="columnIndex">Vizsgálandó oszlop indexe (0-tól induló számozás)</param>
+        /// <returns>true - létezik ilyen oszlop</returns>
+        public abstract bool IsValidIndexForColumn(int columnIndex);
 
         /// <summary>
         /// Megvizsgálja, hogy létezik-e a megadott cella a táblázatban.
@@ -81,9 +97,8 @@ namespace BannerProjekt.Models
         /// <param name="rowIndex">Cella sorának száma (0-tól induló számozás)</param>
         /// <param name="columnIndex">Cella oszlopának száma (0-tól induló számozás)</param>
         /// <returns>true - érvényes a hivatkozás, false - nem létezik ilyen cella</returns>
-        /// <exception cref="IndexOutOfRangeException ">Ha az indexek kivül esnek az aktuális tábla méretén</exception>
         public abstract bool IsValidCell(int rowIndex, int columnIndex);
-        //TODO Tipp - Vezesse át az előző két függvényre!
+        //TODO Tipp - Használja fel az előző két függvényt!
 
 
         /// <summary>
@@ -144,6 +159,73 @@ namespace BannerProjekt.Models
         /// <returns>A cella típusa, ami lehet CellType.String, CellType.Number, CellType.Date, CellType.Bool</returns>
         /// <exception cref="IndexOutOfRangeException ">Ha az indexek kivül esnek az aktuális tábla méretén</exception>
         public abstract CellType GetType(int rowIndex, int columnIndex);
+
+
+        /// <summary>
+        /// A táblázat megjelenítésére alkamas Stringet állítja elő, ahol a cella szélessége 10 karakter.
+        /// </summary>
+        /// <returns>Táblázat String formában</returns>
+        public override string? ToString()
+        {
+            return ToString(cellsLength: 10);
+        }
+
+        /// <summary>
+        /// A megadott cellaszélességgel hozza létre a táblázatot.
+        /// </summary>
+        /// <param name="cellsLength">Cella szélessége karakterben</param>
+        /// <returns>Táblázat String formában</returns>
+        public string? ToString(int cellsLength)
+        {
+            StringBuilder sb = new StringBuilder();
+            //todo Ide jön a tanári kód rövidesen!
+            String cellFrame = new string('─', cellsLength);
+            StringBuilder rowFrame = new StringBuilder("┌" + cellFrame);
+            for (int i = 1; i < ColumnCount; i++)
+            {
+                rowFrame.Append('┬' + cellFrame);
+            }
+            rowFrame.Append("┐" + "\n");
+            sb.Append(rowFrame);
+
+            StringBuilder rowData = new();
+
+            for (int rowIndex = 0; rowIndex < RowCount; rowIndex++)
+            {
+                rowData = new StringBuilder();
+                for (int colIndex = 0; colIndex < ColumnCount; colIndex++)
+                {
+                    rowData.Append('│' + (cells[rowIndex, colIndex].Length > cellsLength
+                        ? cells[rowIndex, colIndex].Substring(0, cellsLength - 1) + '■'
+                        : cells[rowIndex, colIndex].PadLeft(cellsLength)));
+                }
+                rowData.Append("│");
+                sb.Append(rowData + "\n");
+
+
+                if (rowIndex < RowCount - 1)
+                {
+                    rowFrame = new StringBuilder("│" + cellFrame);
+                    for (int i = 1; i < ColumnCount; i++)
+                    {
+                        rowFrame.Append('┼' + cellFrame);
+                    }
+                    rowFrame.Append("┤");
+                    sb.Append(rowFrame + "\n");
+                }
+            }
+
+            rowFrame = new StringBuilder("└" + cellFrame);
+            for (int i = 1; i < ColumnCount; i++)
+            {
+                rowFrame.Append('┴' + cellFrame);
+            }
+            rowFrame.Append("┘" + "\n");
+            sb.Append(rowFrame);
+
+            return sb.ToString();
+        }
+
     }
 }
 

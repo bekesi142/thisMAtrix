@@ -4,10 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BannerProjekt.Models
+namespace SpreadsheetProjekt.Models
 {
     public interface IStorageHandler
     {
+        //Ha a metódusok előtt nem adok meg láthatóságot, akkor is public-nak veszi.
+        //Az interfészben a metódusok mindig public láthatóságúak és nem is lehetnek private-ok!
+        //Az implementációban viszont már meg kell jelenjen a public! Nem lehet ettől szűkebb a láthatóságuk.
+
         const char CSV_SEPARATOR = ';';
         /// <summary>
         /// Betölti CSV fájlból a táblázat tartalmát

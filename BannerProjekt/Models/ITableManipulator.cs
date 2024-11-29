@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BannerProjekt.Models
+namespace SpreadsheetProjekt.Models
 {
-    internal interface ITableManipulator
+    public interface ITableManipulator
     {
         /// <summary>
         /// Egy sort kitölt a megadott értékkel
         /// </summary>
-        /// <param name="row">A sor indexe</param>
+        /// <param name="rowIndex">A sor indexe</param>
         /// <param name="value">Az érték, ami a sor minden cellájába bekerül</param>
         /// <exception cref="IndexOutOfRangeException ">Ha az indexek kivül esnek az aktuális tábla méretén</exception>
         public void FillRow(int rowIndex, string value);
@@ -71,7 +71,7 @@ namespace BannerProjekt.Models
         /// <param name="row1">Első sor indexe</param>
         /// <param name="row2">Második sor indexe</param>
         /// <exception cref="IndexOutOfRangeException ">Ha az indexek kivül esnek az aktuális tábla méretén</exception>
-        void SwapRows(int row1, int row2);
+        public void SwapRows(int row1, int row2);
 
         /// <summary>
         /// Két oszlop tartalmát megcserélni
@@ -79,7 +79,7 @@ namespace BannerProjekt.Models
         /// <param name="column1">Első sor indexe</param>
         /// <param name="column2">Második sor indexe</param>
         /// <exception cref="IndexOutOfRangeException ">Ha az indexek kivül esnek az aktuális tábla méretén</exception>
-        void SwapColumns(int column1, int column2);
+        public void SwapColumns(int column1, int column2);
 
 
     }
