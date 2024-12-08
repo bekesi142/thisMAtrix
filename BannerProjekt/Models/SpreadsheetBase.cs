@@ -20,6 +20,8 @@ namespace SpreadsheetProjekt.Models
         const int MAX_ROW_NUMBER = 5000;
         const int MAX_COLUMN_NUMBER = 100;
         //todo - Készítsen MIN_ROW_NUMBER és MIN_COLUMN_NUMBER néven konstansokat. A legkevesebb sor 6, a elgkevesebb oszlop pedig 10 lehet!
+        const int MIN_ROW_NUMBER = 6;
+        const int MIN_COLUMN_NUMBER = 10;
 
         private string[,] cells;
 
@@ -43,12 +45,17 @@ namespace SpreadsheetProjekt.Models
         public SpreadsheetBase(int numberOfRows, int numberOfColumns)
         {
             ArgumentOutOfRangeException.ThrowIfGreaterThan(numberOfRows, MAX_ROW_NUMBER, "numberOfRows");
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(numberOfColumns, MAX_COLUMN_NUMBER, "numberOfColumn");
+            ArgumentOutOfRangeException.ThrowIfLessThan(numberOfRows, MIN_ROW_NUMBER, "numberOfRow");
+            ArgumentOutOfRangeException.ThrowIfLessThan(numberOfColumns, MIN_COLUMN_NUMBER, "numberOfColumn");
             //todo A méretekre végezzen további hibavizsgálatot!
             cells = new string[numberOfRows, numberOfColumns];
             ResetTable();
         }
         //todo 1) - [SpreadsheetBase] Készítsen paraméter nélküli konstruktort, amit a meglévő konstruktorra vezet vissza!
         // Ebben az esetben a minimum számú oszlop és minimum számú sor legyen a létrejövő táblázatban!
+
+        public SpreadsheetBase() : this(MIN_ROW_NUMBER, MIN_COLUMN_NUMBER){ }
 
         /// <summary>
         /// A táblázat cellájához biztosít írási és olvasási hozzáférést
@@ -61,16 +68,25 @@ namespace SpreadsheetProjekt.Models
         {
             get
             {
+                if (!IsValidCell(rowIndex,columnIndex))
+                {
+                    throw new IndexOutOfRangeException();
+                }
                 //todo Hibavizsgálat az indexekre!
                 // Hiba esetén IndexOutOfRangeException kiváltása!
 
-
+                
                 return this[rowIndex, columnIndex];
             }
             set
             {
+                if (!IsValidCell(rowIndex, columnIndex))
+                {
+                    throw new IndexOutOfRangeException();
+                }
                 //todo Hibavizsgálat az indexekre!
                 // Hiba esetén IndexOutOfRangeException kiváltása!
+                Console.WriteLine("this niga");
                 this[rowIndex, columnIndex] = value;
             }
         }
